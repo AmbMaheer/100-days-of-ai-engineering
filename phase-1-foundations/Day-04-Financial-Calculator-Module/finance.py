@@ -1,3 +1,4 @@
+
 # finance.py
 # This module provides financial calculation functions for the Financial Calculator application.
 

@@ -1,6 +1,9 @@
+
+
 # Financial Calculator Main Program
 # This program provides a command-line interface for users to perform various financial calculations.
 import finance
+import logger
 
 print("Welcome to the Financial Calculator!")
 while True:
@@ -46,6 +49,7 @@ while True:
         
         profit = finance.calculate_profit(revenue, cost, tax_rate)
         print(f"The profit after tax is: N{profit:.2f}")
+        logger.log_calculation("Profit Calculation", f"revenue={revenue}, cost={cost}, tax_rate={tax_rate_input}%", f"N{profit:.2f}")   
 
     elif choice == '2':
         while True:            
@@ -62,7 +66,7 @@ while True:
                 print("Invalid input. Please enter a valid number for returns.")
         roi = finance.calculate_roi(investment, returns)
         print(f"The ROI is: {roi:.2f}%")
-
+        logger.log_calculation("ROI Calculation", f"investment={investment}, returns={returns}", f"{roi:.2f}%")
     elif choice == '3':
         while True:
             try:
@@ -83,6 +87,7 @@ while True:
             except ValueError:
                 print("Invalid input. Please enter a valid number for variable cost per unit.")
         break_even_units = finance.calculate_break_even(fixed_costs, price_per_unit, cost_per_unit)
+        logger.log_calculation("Break-Even Calculation", f"fixed_costs={fixed_costs}, price_per_unit={price_per_unit}, cost_per_unit={cost_per_unit}", f"{break_even_units:.2f} units")
         print(f"The break-even point is: {break_even_units:.2f} units")
 
     elif choice == '4':
@@ -111,32 +116,39 @@ while True:
             except ValueError:
                 print("Invalid input. Please enter a valid integer for the number of compounding periods.")
         amount = finance.calculate_compound_interest(principal, rate, time, n)
+        logger.log_calculation("Compound Interest Calculation", f"principal={principal}, rate={rate}, time={time}, n={n}", f"N{amount:.2f}")
         print(f"The amount after compound interest is: N{amount:.2f}")
 
     elif choice == '5':
         transactions = []
         print("Enter financial transactions (negative values for expenses, positive for income; enter 0 to finish):")
         while True:
-            transaction = float(input("Enter a transaction amount: "))
-            if transaction == 0:
-                break
-            transactions.append(transaction)
-            if len(transactions) == 0:
-                print("No transactions were entered. Returning to menu.")
-            else:
-                summary = finance.summarize_finances(*transactions)
-                print("Financial Summary:")
-                print(f"Total Income: N{summary['total_income']:.2f}")
-                print(f"Average Income: N{summary['average_income']:.2f}")
-                print(f"Highest Income: N{summary['highest_income']:.2f}")
-                print(f"Lowest Income: N{summary['lowest_income']:.2f}")
-                print(f"Total Expenses: N{summary['total_expenses']:.2f}")
-                print(f"Net Balance: N{summary['net_balance']:.2f}")
+            try:
+                transaction = float(input("Enter a transaction amount: "))
+                if transaction == 0:
+                    break
+                transactions.append(transaction)
+            except ValueError:
+                print("Invalid input. Please enter a valid number for the transaction amount.")
+        if len(transactions) == 0:
+            print("No transactions were entered. Returning to menu.")
+        else:
+            summary = finance.summarize_finances(*transactions)
+            logger.log_calculation("Financial Summary", f"transactions={transactions}", f"Total Income: N{summary['total_income']:.2f}, Average Income: N{summary['average_income']:.2f}, Highest Income: N{summary['highest_income']:.2f}, Lowest Income: N{summary['lowest_income']:.2f}")
+            print("Financial Summary:")
+            print(f"Total Income: N{summary['total_income']:.2f}")
+            print(f"Average Income: N{summary['average_income']:.2f}")
+            print(f"Highest Income: N{summary['highest_income']:.2f}")
+            print(f"Lowest Income: N{summary['lowest_income']:.2f}")
+            print(f"Total Expenses: N{summary['total_expenses']:.2f}")
+            print(f"Net Balance: N{summary['net_balance']:.2f}")
 
     elif choice == '6':
         print("Thank you for using the Financial Calculator. Goodbye!")
+        logger.log_calculation("Exit", "", "User exited the application")
         break
 
     else:
         print("Invalid choice. Please choose a valid option (1-6).")
+        logger.log_calculation("Invalid Choice", "", "User selected an invalid option")
         continue
