@@ -1,5 +1,4 @@
 # This is a simple currency converter that uses the ExchangeRate-API to fetch exchange rates and perform currency conversions.  
-from urllib import response
 
 import requests
 import dotenv
@@ -17,13 +16,18 @@ def get_exchange_rates(base_currency, api_key):
     # calls the API and returns a dictionary of rates
     url = f'https://v6.exchangerate-api.com/v6/{api_key}/latest/{base_currency}' 
     
-    # Making our request
-    response = requests.get(url)
-    data = response.json()
-    
-    # Extract the inner dictionary and RETURN it!
-    rates_dictionary = data.get("conversion_rates")
-    return rates_dictionary
+   
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # raises error for 4xx and 5xx
+        data = response.json()
+        return data.get("conversion_rates")
+    except requests.exceptions.ConnectionError:
+        print("No internet connection. Please check your network.")
+        return None
+    except requests.exceptions.HTTPError as e:
+        print(f"API error: {e}")
+        return None
     
     # example: {"USD": 1, "NGN": 1547.23, "EUR": 0.92}
 
@@ -93,6 +97,9 @@ while True:
             except ValueError:
                 print("Invalid currency. Please enter a valid currency.")
         rates = get_exchange_rates("USD", api_key) 
+        if rates is None:
+            print("Unable to fetch exchange rates. Please try again later.")
+            continue
         final_amount = convert_currency(amount, from_currency, to_currency, rates)
         print(f"{amount} {from_currency} is equal to {final_amount:.2f} {to_currency}.")
         again = input("Do you want to perform another conversion? (yes/no): ").lower()
@@ -109,8 +116,12 @@ while True:
                     continue
                 break
             except ValueError:
-                print("Invalid currency. Please enter a valid currency.")   
-        rates = get_exchange_rates("USD", api_key)  
+                print("Invalid currency. Please enter a valid currency.") 
+        rates = get_exchange_rates("USD", api_key)
+        if rates is None:
+            print("Unable to fetch exchange rates. Please try again later.")
+            continue
+
         print("Exchange rates for NGN:")  
         ngn_to_usd, ngn_to_eur, ngn_to_ngn = show_ngn_rates(rates)
         print(f"1 NGN is equal to {ngn_to_usd:.2f} USD")
