@@ -58,8 +58,8 @@ def show_ngn_rates(rates):
     
     return ngn_to_usd, ngn_to_eur, ngn_to_ngn
 
-print("Wellcome to the currency converter!")
-name = input("what's your name? ")
+print("Welcome to the currency converter!")
+name = input("What's your name? ")
 print(f"Hello, {name}!")
 
 while True:

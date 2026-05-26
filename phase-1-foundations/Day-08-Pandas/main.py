@@ -1,16 +1,20 @@
+from calendar import month
+
 import analysis
 
+print("===== ELITE DATA SIM — SALES REPORT =====\n")
 
-print("===== ELITE DATA SIM — SALES REPORT =====")
+sales_data = analysis.load_sales_data("sales.csv")
 
-filename = "sales.csv"
-sales_data = analysis.load_sales_data(filename)
 if sales_data is not None:
-    total_revenue = analysis.total_revenue(sales_data)
-    print(f"Total Revenue: ${total_revenue:,.2f}\n")
-    print("Average sale value: ${:.2f}\n".format(total_revenue / len(sales_data)))
-    print("Total profit: ${:,.2f}\n".format(total_revenue * 0.3))  # Assuming a profit margin of 30%
-
+    
+    print(f"Total revenue:        N{analysis.total_revenue(sales_data):,.2f}")
+    print(f"Average sale value:   N{analysis.average_sale_value(sales_data):,.2f}")
+    total_profit, avg_profit, profit_by_pkg = analysis.profit_summary(sales_data)
+    print(f"Total profit:         N{total_profit:,.2f}")
+    print(f"Average profit/sale:  N{avg_profit:,.2f}")  # Display average profit per sale
+    print("\nProfit by Package:")
+    print(profit_by_pkg.to_string())
     revenue_by_package = analysis.revenue_by_package(sales_data)
     print("\nRevenue by Package:")
     print(revenue_by_package.to_string())
@@ -23,10 +27,11 @@ if sales_data is not None:
 
     revenue_by_month = analysis.revenue_by_month(sales_data)
     print("\nRevenue by Month:")
-    print(revenue_by_month.to_string())
+    for month, revenue in revenue_by_month.items():
+        print(f"  {month}    N{revenue:,.2f}")
 
-    busiest_month = revenue_by_month.idxmax()
-    print(f"\nBusiest Month: {busiest_month}")
+    busiest = analysis.busiest_month(sales_data)
+    print(f"\nBusiest Month: {busiest}")
 else:
     print("Failed to load sales data. Please check the file and try again.")
 

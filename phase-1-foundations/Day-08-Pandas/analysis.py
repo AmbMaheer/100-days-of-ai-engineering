@@ -86,8 +86,8 @@ def average_sale_value(sales_data):
     """
     if sales_data is None:
         return 0.0
-    sales_data['revenue'] = sales_data['quantity'] * sales_data['mount_paid']
-    average_value = sales_data['revenue'].mean()
+   
+    average_value = sales_data['amount_paid'].mean()
     return average_value
 
 def busiest_month(sales_data):
@@ -99,27 +99,24 @@ def busiest_month(sales_data):
     """
     if sales_data is None:
         return None
-    sales_data['revenue'] = sales_data['quantity'] * sales_data['mount_paid']
-    sales_data['month'] = pd.to_datetime(sales_data['sales_date']).dt.to_period('M')
-    sales_by_month = sales_data.groupby('month')['quantity'].sum()
+    sales_data['month'] = pd.to_datetime(sales_data['sale_date']).dt.to_period('M')
+    sales_by_month = sales_data.groupby('month')['amount_paid'].count()
     busiest_month = sales_by_month.idxmax()
     return str(busiest_month)
 
-def profit_summary(sales_data, cost_per_unit):
+def profit_summary(sales_data):
     """Calculates the total profit from the sales data based on a given cost per unit.
     Args:
         sales_data (pd.DataFrame): A DataFrame containing the sales data.
-        cost_per_unit (float): The cost of producing one unit of the product.
     Returns:
         float: The total profit calculated from the sales data.
     """   
     if sales_data is None:
         return 0.0
-    sales_data['revenue'] = sales_data['quantity'] * sales_data['mount_paid']
-    sales_data['profit'] = sales_data['revenue'] - (sales_data['quantity'] * cost_per_unit)
+    sales_data['profit'] = sales_data['amount_paid'] - sales_data['pkg_cost']
     total_profit = sales_data['profit'].sum()
     average_profit_per_sale = sales_data['profit'].mean()
-    profit_by_package = sales_data.groupby('package')['profit'].sum().sort_values(ascending=False)
+    profit_by_package = sales_data.groupby('pkg_name')['profit'].sum().sort_values(ascending=False)
     return total_profit, average_profit_per_sale, profit_by_package
 
 
