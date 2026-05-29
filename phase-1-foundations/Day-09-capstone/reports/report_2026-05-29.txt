@@ -1,0 +1,37 @@
+============================================
+   ELITE DATA SIM — DAILY INTELLIGENCE REPORT
+   Generated: 2026-05-29 11:09:12
+============================================
+
+SALES SUMMARY
+─────────────────────────────────────────
+Total revenue:          N59,000.00
+Total profit:           N22,600.00
+Average sale value:     N3,933.33
+Best performing package: 20GB Monthly
+
+CUSTOMER INTELLIGENCE
+─────────────────────────────────────────
+Total customers:        6
+Top customer:           Usama Taheer (N15,500)
+
+PACKAGE PROFIT MARGINS
+─────────────────────────────────────────
+  - 20GB Monthly: N11,000.00
+  - 10GB Monthly: N8,400.00
+  - 5GB Monthly: N3,200.00
+
+MONTHLY TREND
+─────────────────────────────────────────
+2026-03    N21,000  ██████████
+2026-04    N23,000  ███████████  ← busiest
+2026-05    N15,000  ███████
+
+CURRENCY SNAPSHOT (live rates)
+─────────────────────────────────────────
+Your N59,000 revenue equals:
+  USD:   $42.98
+  EUR:   €36.92
+  GBP:   £32.00
+
+============================================
