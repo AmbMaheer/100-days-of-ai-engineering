@@ -118,5 +118,3 @@ def profit_summary(sales_data):
     average_profit_per_sale = sales_data['profit'].mean()
     profit_by_package = sales_data.groupby('pkg_name')['profit'].sum().sort_values(ascending=False)
     return total_profit, average_profit_per_sale, profit_by_package
-
-
