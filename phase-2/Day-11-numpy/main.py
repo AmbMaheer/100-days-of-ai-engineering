@@ -34,8 +34,6 @@ sales_data = np.array([
     [88, 5, 17500, 10500], [89, 2, 7000, 4200],    [90, 7, 24500, 14700],
 ])
 
-# 1. 7-day moving average of revenue
-#    Calculate this WITHOUT a loop using np.convolve()
 revenue = sales_data[:, 2]
 moving_avg_7d = np.convolve(revenue, np.ones(7)/7, mode='valid')
 print(f"Length of moving_avg_7d: {len(moving_avg_7d)}")  # Should be 84, since the first 6 days don't have a full 7-day window
@@ -43,14 +41,12 @@ print(f"7-day Moving Average of Revenue (first 5 values): {moving_avg_7d[:5]}")
 #    The output array is shorter than the input array because the 'valid' mode of convolution only computes the average for positions where the full 7-day window fits within the original revenue array.
 
 
-# 2. Cumulative revenue
-#    At any point, how much has the business earned so far?
+
 cumulative_revenue = np.cumsum(revenue)
 print(f"Cumulative Revenue at Day 30: {cumulative_revenue[29]}, Day 60: {cumulative_revenue[59]}, Day 90: {cumulative_revenue[89]}")
 
 
-# 3. Day-over-day change
-#    How much did revenue change from one day to the next?
+
 day_over_day_change = np.diff(revenue)
 biggest_jump = np.max(day_over_day_change)
 biggest_drop = np.min(day_over_day_change)
@@ -58,8 +54,7 @@ jump_day = np.argmax(day_over_day_change) + 1
 drop_day = np.argmin(day_over_day_change) + 1
 print(f"Biggest Jump: {biggest_jump} (Day {jump_day}), Biggest Drop: {biggest_drop} (Day {drop_day})")
 
-# 4. Percentile analysis
-#    What revenue amount represents a "good day" vs a "bad day"?
+
 percentiles = np.percentile(revenue, [25, 50, 75])
 good_day_threshold = percentiles[2]
 bad_day_threshold = percentiles[0]
@@ -68,14 +63,13 @@ slow_days = np.sum((revenue < bad_day_threshold) & (revenue > 0))
 print(f"25th Percentile: {percentiles[0]}, 50th Percentile: {percentiles[1]}, 75th Percentile: {percentiles[2]}")
 print(f"Great Days: {great_days}, Slow Days: {slow_days}")
 
-# 5. Combine today's data with a new week
-#    Pretend you just got 7 more days of sales:
+
 new_week = np.array([
     [91, 4, 14000, 8400], [92, 3, 10500, 6300], [93, 5, 17500, 10500],
     [94, 2, 7000, 4200],  [95, 6, 21000, 12600], [96, 0, 0, 0],
     [97, 7, 24500, 14700]
 ])
-#    Combine it with the original sales_data using np.vstack()
+
 combined_data = np.vstack([sales_data, new_week])
-#    Confirm the new array has 97 rows using .shape
+
 print(f"Combined Data Shape: {combined_data.shape}")

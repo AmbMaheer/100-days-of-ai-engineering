@@ -37,46 +37,28 @@ sales_data = np.array([
     [97, 7, 24500, 14700]
 ])
 
-# Build a DataFrame with real dates starting from a chosen date
-# Use the same 97 days of data from Day 12, but assign real
-# calendar dates instead of just day numbers — start anywhere,
-# e.g. 2026-01-01
+
+np.random.seed(42)
 dates = pd.date_range(start='2026-01-01', periods=sales_data.shape[0], freq='D')
 
 
-# 1. Create the DataFrame
-#    Columns: date, units, revenue, cost
-#    Set 'date' as the DataFrame's index using pd.to_datetime() 
-#    and .set_index()
+
 df = pd.DataFrame(sales_data, columns=['day', 'units', 'revenue', 'cost'])
 df['date'] = dates
 df.set_index('date', inplace=True)
 
 
-# 2. Weekly resampling
-#    df['revenue'].resample('W').sum()
-#    Compare this to your Day 11 manual reshape(12,7).sum(axis=1)
-#    Do the totals match? They should — explain in a comment 
-#    why resample() is the better tool going forward
+
 weekly_revenue = df['revenue'].resample('W').sum()
 # The totals match because both methods aggregate the revenue data over the same time period (weekly). However, resample() is a better tool going forward because it is more flexible and can handle irregular time series data, allows for different aggregation functions, and integrates seamlessly with pandas' time series functionality.
 
-# 3. Monthly resampling
-#    df['revenue'].resample('M').sum()
-#    df['revenue'].resample('M').mean()
-#    Which month had the highest total revenue?
+
 monthly_revenue = df['revenue'].resample('ME').sum()
 monthly_mean_revenue = df['revenue'].resample('ME').mean()
 highest_revenue_month = monthly_revenue.idxmax()
 print(f"Month with highest total revenue: {highest_revenue_month.strftime('%B %Y')} with revenue of {monthly_revenue.max()}")
 
-# 4. Rolling 7-day average — the pandas way
-#    df['revenue'].rolling(window=7).mean()
-#    Compare the first 5 non-NaN values to your Day 11 
-#    np.convolve() output — do they match?
-#    Notice: rolling() produces NaN for the first 6 days 
-#    instead of just shortening the array. Why is that 
-#    actually more honest than what convolve did?
+
 rolling_avg_revenue = df['revenue'].rolling(window=7).mean()
 # convolve() shrinks the array from 97 to 91. If you then lined that array 
 # up against your original 97 dates, Jan 1 would end up paired with the 
@@ -86,16 +68,9 @@ rolling_avg_revenue = df['revenue'].rolling(window=7).mean()
 # 97 values, marking the first 6 as NaN instead of dropping them.
 
 
-# 5. Rolling with a minimum period
-#    df['revenue'].rolling(window=7, min_periods=1).mean()
-#    This fills in early days with a "partial" average 
-#    instead of NaN. When would you want this vs. not?
-#    You would want this when you want to avoid NaN values in the early days and still have some form of average, even if it's based on fewer data points.
+
 rolling_avg_revenue_min_periods = df['revenue'].rolling(window=7, min_periods=1).mean()
 
-# 6. Combine rolling average with the original data
-#    Add the rolling average as a NEW COLUMN in your DataFrame
-#    df['revenue_7d_avg'] = df['revenue'].rolling(7).mean()
-#    Print the last 10 rows showing both columns side by side
+
 df['revenue_7d_avg'] = df['revenue'].rolling(7).mean()
 print(df[['revenue', 'revenue_7d_avg']].tail(10))

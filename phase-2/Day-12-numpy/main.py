@@ -38,29 +38,19 @@ sales_data = np.array([
 ])
 
 
-# 1. Fit a trend line through the revenue data
-#    x = day numbers, y = revenue
-#    slope, intercept = np.polyfit(days, revenue, 1)
-#    Print the slope — what does a positive slope tell you 
-#    about the business in plain English?
 x = sales_data[:, 0]
 y = sales_data[:, 2]
 slope, intercept = np.polyfit(x, y, 1)
 print(f"Slope: {slope}, Intercept: {intercept}")
 #The positive slope indicates that the business's revenue is generally increasing over time, suggesting growth in sales or customer base.
 
-# 2. Predict the next 7 days
-#    Using y = mx + b, predict revenue for days 98-104
-#    Print each predicted day and its forecasted revenue
+
 predicted_days = np.arange(98, 105)
 predicted_revenue = slope * predicted_days + intercept
 for day, revenue in zip(predicted_days, predicted_revenue):
     print(f"Predicted Revenue for Day {day}: {revenue:.2f}")
 
-# 3. Predict next 30 days total
-#    Sum the predictions for days 98-127
-#    Compare this to the actual total revenue of the last 30 
-#    recorded days — is the forecast higher, lower, or similar?
+
 actual_total_last_30_days = np.sum(sales_data[-30:, 2])
 predicted_total_next_30_days = np.sum(slope * np.arange(98, 128) + intercept)
 print(f"Actual Total Revenue for Last 30 Days: {actual_total_last_30_days}")
@@ -72,22 +62,13 @@ elif predicted_total_next_30_days < actual_total_last_30_days:
 else:
     print("The forecast is similar to the actual total revenue of the last 30 days.")
 
-# 4. Confidence check — residuals
-#    For each historical day, calculate the difference between 
-#    the ACTUAL revenue and what the trend line PREDICTED for 
-#    that same day (this is called a "residual")
-#    Calculate the standard deviation of these residuals
-#    This tells you how much to trust the forecast —
-#    a high residual std means the trend line is a rough guide,
-#    not a precise prediction
 predicted_revenue_historical = slope * x + intercept
 residuals = y - predicted_revenue_historical
 residual_std = np.std(residuals)
 print(f"Standard Deviation of Residuals: {residual_std:.2f}")
 
 
-# 5. Build a simple forecast range
-#    Predicted next-day revenue ± 1 standard deviation of residuals
-#    Print this as: "Tomorrow's revenue is likely between ₦X and ₦Y"
 tomorrow_revenue = slope * 105 + intercept
 print(f"Tomorrow's revenue is likely between ₦{tomorrow_revenue - residual_std:.2f} and ₦{tomorrow_revenue + residual_std:.2f}")
+
+#The revenue of this bussiness cannot be modeled with a simple straight line, as the standard deviation of the residuals is quite high, indicating that there is a lot of variability in the revenue data that is not captured by the linear trend. This suggests that while there may be an overall upward trend, there are likely other factors influencing revenue that are not accounted for in this simple model.

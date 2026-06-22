@@ -1,7 +1,6 @@
 import numpy as np
 
-# 90 days of Elite Data Sim sales data
-# Each row: [day_number, units_sold, revenue, cost]
+
 sales_data = np.array([
     [1,  3, 10500, 6300],  [2,  1, 6000, 3800],   [3,  2, 7000, 4200],
     [4,  0, 0, 0],         [5,  4, 12000, 7200],   [6,  2, 7000, 4200],
@@ -36,60 +35,51 @@ sales_data = np.array([
 ])
 
 
-# Extract columns into named variables first
+
 days     = sales_data[:, 0]
 units    = sales_data[:, 1]
 revenue  = sales_data[:, 2]
 cost     = sales_data[:, 3]
 profit   = revenue - cost   
 
-# 1. Basic financial summary
-#    total revenue, total profit, total units sold
 total_revenue = np.sum(revenue)
 total_profit = np.sum(profit)
 total_units = np.sum(units)
-#    average daily revenue, average daily profit
+
 avg_daily_revenue = total_revenue / len(revenue)
 avg_daily_profit = total_profit / len(profit)
 print(f"Total Revenue: {total_revenue}, Total Profit: {total_profit}, Total Units Sold: {total_units}")
 print(f"Average Daily Revenue: {avg_daily_revenue}, Average Daily Profit: {avg_daily_profit}")
-# 2. Profit margin per day
-#    profit / revenue — but handle division by zero on days with no sales
+
+
 profit_margin = np.divide(profit, revenue, out=np.zeros_like(profit, dtype=float), where=revenue != 0)  # Set margin to 0 on zero-revenue days
 print(f"Profit Margin per Day: {profit_margin}")
 
 
 
 
-# 3. Active days vs zero-sales days
-#    how many days had sales? how many had none?
-#    use boolean indexing
+
 active_days = np.sum(units > 0)
 zero_sales_days = np.sum(units == 0)
 print(f"Active Days: {active_days}, Zero Sales Days: {zero_sales_days}")
 
-# 4. Best and worst days
+
 best_day = days[np.argmax(revenue)]
 worst_day = days[np.argmin(np.where(revenue > 0, revenue, np.inf))]  # Exclude zero revenue days
 print(f"Best Day: {best_day}, Worst Day: {worst_day}")
-# 5. Weekly revenue totals
-#    reshape the 90-day revenue into weeks and sum each week
-#   Note: 90 days is not a multiple of 7, so we will only consider the first 84 days (12 weeks)
+
 weekly_revenue = revenue[:84].reshape(12, 7).sum(axis=1)
 print(f"Weekly Revenue Totals: {weekly_revenue}")
 
-# 6. Revenue growth
-#    compare first 30 days total vs last 30 days total
+
 first_30_revenue = np.sum(revenue[:30])
 last_30_revenue = np.sum(revenue[-30:])
 revenue_growth = (last_30_revenue - first_30_revenue) / first_30_revenue * 100
 print(f"Revenue Growth from first 30 days to last 30 days: {revenue_growth:.2f}%")
-#    calculate percentage growth
 
 
-# 7. Standard deviation of daily revenue
-#    what does a high std tell you about this business?
-#    write a one-line comment answering that question
+
+
 revenue_std = np.std(revenue)
 print(f"Standard Deviation of Daily Revenue: {revenue_std}")
 # A high standard deviation indicates that the daily revenue is highly variable, which could suggest inconsistent sales or a business that is sensitive to external factors (like seasonality or promotions).
